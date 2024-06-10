@@ -13,7 +13,6 @@ export const BasicExample = () => {
   };
 
   const handleCancel = () => {
-    setText("");
     setVisible(false);
   };
 
