@@ -1,4 +1,5 @@
-# A practical example for useImperativeHandle
+# Clean APIs with useImperativeHandle
+For the full article see [dotis.io](https://dotis.io).
 
-
-![diagram.png](diagram.png)
+![events in](events-in.svg)
+![modal](modal.svg)
