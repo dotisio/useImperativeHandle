@@ -3,41 +3,32 @@ import { Modal } from "../components/Modal.tsx";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 
 interface ModalControls {
-  getResponse: () => Promise<string | undefined>;
+  openModal: () => void;
 }
 
-new Promise<void>((resolve) => {
-  setTimeout(() => {
-    resolve();
-  }, 1000);
-});
+interface ModalProps {
+  onResult: (result: string) => void;
+}
 
-const MyModal = forwardRef<ModalControls>((_, ref) => {
+const MyModal = forwardRef<ModalControls, ModalProps>((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState("");
-  // todo: resolve type
-  const resolveRef = useRef<(value: string | undefined) => void>();
 
   const handleSubmit = () => {
-    resolveRef.current?.(text);
+    props.onResult(text);
     setVisible(false);
   };
 
   const handleCancel = () => {
-    resolveRef.current?.(undefined);
     setVisible(false);
   };
 
   useImperativeHandle(
     ref,
     () => ({
-      getResponse() {
+      openModal() {
         setVisible(true);
         setText("");
-
-        return new Promise<string | undefined>((resolve) => {
-          resolveRef.current = resolve;
-        });
       },
     }),
     [],
@@ -61,18 +52,18 @@ export const RefExample = () => {
   const modalRef = useRef<ModalControls>(null);
 
   const handleOpen = async () => {
-    const modalResult = await modalRef.current?.getResponse();
-
-    if (modalResult !== undefined) {
-      setResult(modalResult);
-    }
+    modalRef.current?.openModal();
   };
+
+  const handleResult = (modalResult: string) => {
+    setResult(modalResult)
+  }
 
   return (
     <>
       result: {JSON.stringify(result)}
       <Button onClick={handleOpen}>open basic</Button>
-      <MyModal ref={modalRef} />
+      <MyModal ref={modalRef} onResult={handleResult} />
     </>
   );
 };
